@@ -1,18 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
+import { removeItem, updateQuantity, updateCartItems } from './CartSlice';
 import './CartItem.css';
 import { useState } from 'react';
 
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
+  const itemCount = useSelector(state => state.itemCount);
   const dispatch = useDispatch();
   const [total, setTotal] = useState(0)
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
     let total = 0 
     cart.forEach(element => {
-        console.log(element)
         total += element.quantity * parseInt(element.cost.slice(1));
         
     });
@@ -20,8 +20,17 @@ const CartItem = ({ onContinueShopping }) => {
     
     };
 
-   const handleIncrement = (item) => {
+ 
+
+  const handleContinueShopping = () => {
+    onContinueShopping();
+  };
+
+
+
+  const handleIncrement = (item) => {
     dispatch(updateQuantity({...item, quantity:item.quantity + 1}))
+    dispatch(updateCartItems(itemCount + 1))
   };
 
   const handleDecrement = (item) => {
@@ -30,10 +39,14 @@ const CartItem = ({ onContinueShopping }) => {
     }else{
         dispatch(updateQuantity({...item, quantity:item.quantity - 1}))
     }
+    dispatch(updateCartItems(itemCount - 1))
   };
 
   const handleRemove = (item) => {
     dispatch(removeItem(item))
+  };
+  const handleCheckoutShopping = () => {
+    alert('Functionality to be added for future reference');
   };
 
   // Calculate total cost based on quantity for an item
@@ -67,7 +80,7 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button className="get-started-button1" onClick={handleCheckoutShopping}>Checkout</button>
       </div>
     </div>
   );
