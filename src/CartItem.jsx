@@ -2,34 +2,44 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
+import { useState } from 'react';
 
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
-
+  const [total, setTotal] = useState(0)
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
- 
-  };
+    let total = 0 
+    cart.forEach(element => {
+        console.log(element)
+        total += element.quantity * parseInt(element.cost.slice(1));
+        
+    });
+    return total
+    
+    };
 
-  const handleContinueShopping = (e) => {
-   
-  };
-
-
-
-  const handleIncrement = (item) => {
+   const handleIncrement = (item) => {
+    dispatch(updateQuantity({...item, quantity:item.quantity + 1}))
   };
 
   const handleDecrement = (item) => {
-   
+    if (item.quantity - 1 === 0){
+        dispatch(removeItem(item))
+    }else{
+        dispatch(updateQuantity({...item, quantity:item.quantity - 1}))
+    }
   };
 
   const handleRemove = (item) => {
+    dispatch(removeItem(item))
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    return parseInt(item.cost.slice(1)) * item.quantity
+    
   };
 
   return (
